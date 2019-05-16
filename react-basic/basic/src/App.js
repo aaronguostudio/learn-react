@@ -8,7 +8,10 @@ import NotFound from './pages/NotFound'
 import { ThemeProvider } from './context/ThemeContext'
 import './styles/index.css'
 
-const THEME = 'light'
+const THEME = {
+  theme: 'light',
+  icon: 'flat'
+}
 
 function App() {
   return (

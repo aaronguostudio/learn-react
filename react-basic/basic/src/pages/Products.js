@@ -24,7 +24,12 @@ export default class Products extends React.Component {
                   <NavLink to={`${match.url}/3`}>AR</NavLink>
                 </div>
                 <div>
-                  Theme: {context}
+                  <div>
+                    Theme: {context.theme}
+                  </div>
+                  <div>
+                    Icon: {context.icon}
+                  </div>
                 </div>
                 <Route path={`${match.path}/:id`} component={Product} />
               </React.Fragment>
