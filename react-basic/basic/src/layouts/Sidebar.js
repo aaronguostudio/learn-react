@@ -1,18 +1,18 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import styles from './Layout.module.css'
 
 export default function Header () {
   return (
     <div className={styles.sidebar}>
       <div>
-        <Link to="/">Home</Link>
+        <NavLink exact activeClassName="link-active" to="/">Home</NavLink>
       </div>
       <div>
-        <Link to="/products">Products</Link>
+        <NavLink activeClassName="link-active" to="/products">Products</NavLink>
       </div>
       <div>
-        <Link to="/about">About</Link>
+        <NavLink exact activeClassName="link-active" to="/about">About</NavLink>
       </div>
     </div>
   )

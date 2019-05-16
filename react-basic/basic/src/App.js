@@ -1,19 +1,28 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import React from 'react'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import DefaultLayout from './layouts/DefaultLayout'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import About from './pages/About'
-import './styles/index.css';
+import NotFound from './pages/NotFound'
+import { ThemeProvider } from './context/ThemeContext'
+import './styles/index.css'
+
+const THEME = 'light'
 
 function App() {
   return (
     <Router>
-      <DefaultLayout>
-        <Route exact path='/' component={Home} />
-        <Route exact path='/about' component={About} />
-        <Route path='/products' component={Products} />
-      </DefaultLayout>
+      <ThemeProvider value={THEME} >
+        <DefaultLayout>
+          <Switch>
+            <Route exact path='/' component={Home} />
+            <Route exact path='/about' component={About} />
+            <Route path='/products' component={Products} />
+            <Route component={NotFound} />
+          </Switch>
+        </DefaultLayout>
+      </ThemeProvider>
     </Router>
   );
 }
