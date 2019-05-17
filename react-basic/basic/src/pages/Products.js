@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, NavLink } from 'react-router-dom'
 import Product from './Product'
 import { ThemeContext } from '../context/ThemeContext'
+import ErrorBoundary from '../components/ErrorBoundary'
 
 export default class Products extends React.Component {
   constructor (props) {
@@ -31,7 +32,9 @@ export default class Products extends React.Component {
             Theme: {theme.theme}
           </div>
         </div>
-        <Route path={`${match.path}/:id`} component={Product} />
+        <ErrorBoundary>
+          <Route path={`${match.path}/:id`} component={Product} />
+        </ErrorBoundary>
       </React.Fragment>
     )
   }

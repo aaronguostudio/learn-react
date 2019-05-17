@@ -5,7 +5,8 @@ import Home from './pages/Home'
 import Products from './pages/Products'
 import About from './pages/About'
 import NotFound from './pages/NotFound'
-import { themes, ThemeContext } from './context/ThemeContext'
+import { themes, userInfoMock, ThemeContext } from './context/ThemeContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import './styles/index.css'
 
 class App extends React.Component {
@@ -19,9 +20,13 @@ class App extends React.Component {
       }))
     }
 
+    // Global State:
+    // - theme data and control
+    // - user data
     this.state = {
       theme: themes.light,
       toggleTheme: this.toggleTheme,
+      user: userInfoMock,
     }
   }
 
@@ -31,10 +36,12 @@ class App extends React.Component {
         <ThemeContext.Provider value={this.state}>
           <DefaultLayout>
             <Switch>
-              <Route exact path='/' component={Home} />
-              <Route exact path='/about' component={About} />
-              <Route path='/products' component={Products} />
-              <Route component={NotFound} />
+              <ErrorBoundary>
+                <Route exact path='/' component={Home} />
+                <Route exact path='/about' component={About} />
+                <Route path='/products' component={Products} />
+                <Route component={NotFound} />
+              </ErrorBoundary>
             </Switch>
           </DefaultLayout>
         </ThemeContext.Provider>

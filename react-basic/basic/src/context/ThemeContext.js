@@ -13,6 +13,12 @@ export const themes = {
   },
 }
 
+export const userInfoMock = {
+  name: 'Aaron',
+  phone: 'xxx-xxxx-xxxx',
+  email: 'aaron@aaronguostudio.com'
+}
+
 export const ThemeContext = React.createContext(
   {
     theme: themes.light,
