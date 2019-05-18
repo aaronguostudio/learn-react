@@ -1,5 +1,7 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Provider } from 'react-redux'
+import store from './services/store'
 import DefaultLayout from './layouts/DefaultLayout'
 import Home from './pages/Home'
 import Products from './pages/Products'
@@ -31,21 +33,25 @@ class App extends React.Component {
   }
 
   render () {
+
+    const initialState = {}
     return (
-      <Router>
-        <ThemeContext.Provider value={this.state}>
-          <DefaultLayout>
-            <Switch>
+      <Provider store={store(initialState)}>
+        <Router>
+          <ThemeContext.Provider value={this.state}>
+            <DefaultLayout>
               <ErrorBoundary>
-                <Route exact path='/' component={Home} />
-                <Route exact path='/about' component={About} />
-                <Route path='/products' component={Products} />
-                <Route component={NotFound} />
+                <Switch>
+                  <Route exact path='/' component={Home} />
+                  <Route exact path='/about' component={About} />
+                  <Route path='/products' component={Products} />
+                  <Route component={NotFound} />
+                </Switch>
               </ErrorBoundary>
-            </Switch>
-          </DefaultLayout>
-        </ThemeContext.Provider>
-      </Router>
+            </DefaultLayout>
+          </ThemeContext.Provider>
+        </Router>
+      </Provider>
     )
   }
 }
