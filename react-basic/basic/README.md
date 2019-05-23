@@ -6,3 +6,4 @@ This is a react practice project. This project contains the concepts that introd
 - Theme
 - react-router-dom
 - Error Boundaries
+- HOC

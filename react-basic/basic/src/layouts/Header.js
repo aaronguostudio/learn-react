@@ -1,8 +1,23 @@
 import React from 'react'
+import { ThemeContext } from '../context/ThemeContext'
+import logProps from '../components/hoc/logProps'
 import styles from './Layout.module.css'
 
-export default function Header () {
+function Header (props, context) {
   return (
-    <header className={styles.header}>Header</header>
+    <ThemeContext.Consumer>
+      {
+        ({ theme }) => (
+          <header className={styles.header} style={{display: 'flex'}}>
+            <div>Header</div>
+            <div>BG from contextType: {theme.background}</div>
+            <div>Icon from contextType: {theme.icon}</div>
+            <div>Theme from contextType: {theme.theme}</div>
+          </header>
+        )
+      }
+    </ThemeContext.Consumer>
   )
 }
+
+export default logProps(Header)
