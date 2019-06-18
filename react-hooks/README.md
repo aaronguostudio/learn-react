@@ -1,3 +1,5 @@
+# This project is a practice for basic react hooks and react redux
+
 # Hooks rules
 - Only call at the top levels
 - Only call hooks from react functions, don't call from regular js functions
@@ -119,3 +121,9 @@ function Counter () {
   return <h1> Now: {count}, before: {prevCount} </h1>
 }
 ```
+
+
+# Redux rules
+- 单一数据源
+- 状态不可变
+- 纯函数修改状态
