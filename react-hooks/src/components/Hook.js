@@ -42,6 +42,7 @@ function useCountCostom (defaultCount) {
   return [count, setCount]
 }
 
+// 这个方法是可以被其他的函数和组件复用的，而不是像 state 那样很难复用
 function useSize () {
   const [size, setSize] = useState({
     width: document.documentElement.clientWidth,
@@ -74,6 +75,7 @@ function Hook () {
   const [fruit, setFruit] = useState('apple')
   const it = useRef()
   const size = useCallback
+  const newSize = useSize()
 
   // 空数组只执行一次
   // count === 3 会运行两次，第一次状态变为 true, 第二次状态变为 false 两次变化都会触发重新计算
@@ -137,7 +139,7 @@ function Hook () {
       <button onClick={() => setFruit('Strewberry')}> Click </button>
       <hr/>
       <Counter ref={counterRef} count={double} onClick={onClick} />
-      <h1>Size: {size}</h1>
+      <h1>Size: {newSize.width} x {newSize.height}</h1>
     </div>
   )
 }

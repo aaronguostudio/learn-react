@@ -1,68 +1,121 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Hooks rules
+- Only call at the top levels
+- Only call hooks from react functions, don't call from regular js functions
 
-## Available Scripts
+# Hooks common questions
+## Lifecycle mao
 
-In the project directory, you can run:
+form top to down
 
-### `npm start`
+-> 1
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+constructuor -> useState
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+-> 2
 
-### `npm test`
+geDerivedStateFromProps -> setStateFunc()
+```jsx
+class Counter extends Component {
+  state = {
+    overflow: false
+  }
+  static getDerivedStateFromProps (props, state) {
+    if (props.count > 10) {
+      return {
+        overflow: true
+      }
+    }
+  }
+}
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+function Counter (props) {
+  const [ overflow, setOverflow ] = useState(false)
+  if (porps.count > 10) {
+    setOverflow(true)
+  }
+}
+```
 
-### `npm run build`
+-> 3
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+shouldComponentUpdate -> memo, useCallback
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+-> 4
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+render
 
-### `npm run eject`
+-> 5
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+componentDidMount
+componentDidUpdate
+componentWillUnmount
+componentDidUnmount
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```jsx
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+function App () {
+  useEffect(() => {
+    // componentDidMount, componentDidUpdate
+    return () => {
+      // componentWillUnmount
+    }
+  }, [])
+}
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```
 
-## Learn More
+## class props
+  - useRef replaces class props
+  - useRef only accepts value
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```jsx
+// traditional
+class App {
+  it = 0
+}
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+// hooks
+function App {
+  const it = useRef(0)
+}
 
-### Code Splitting
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+```
 
-### Analyzing the Bundle Size
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+## how to get history props and state
+```jsx
+function Counter () {
+  const [count, setCount] = useState(0)
+  const prevCountRef = useRef()
 
-### Making a Progressive Web App
+  useEffect(() => {
+    prevCountRef.current = count
+  })
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+  const prevCountRef = prevCountRef.current
+  return <h1> Now: {count}, before: {prevCount} </h1>
+}
+```
 
-### Advanced Configuration
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+## force update
+```jsx
+function Counter () {
+  const [count, setCount] = useState(0)
+  const [updater, setUpdater] = useState(0)
 
-### Deployment
+  function forceUpdate () {
+    setUpdater(updater => updater + 1)
+  }
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+  const prevCountRef = useRef()
 
-### `npm run build` fails to minify
+  useEffect(() => {
+    prevCountRef.current = count
+  })
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+  const prevCountRef = prevCountRef.current
+  return <h1> Now: {count}, before: {prevCount} </h1>
+}
+```
