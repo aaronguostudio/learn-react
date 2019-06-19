@@ -4,8 +4,20 @@ import { createSet, createAdd, createRemove, createToggle } from './actions'
 let idSeq = Date.now()
 const LS_KEY = 'todos'
 
+function bindActionCreators (actionCreators, dispatch) {
+  const ret = {}
+  for (let key in actionCreators) {
+    ret[key] = function (...args) {
+      const actionCreator = actionCreators[key]
+      const action = actionCreator(...args)
+      dispatch(action)
+    }
+  }
+  return ret
+}
+
 const Control = memo((props) => {
-  const { dispatch } = props
+  const { addTodo } = props
   const inputRef = useRef()
 
   const onSubmit = (e) => {
@@ -14,11 +26,11 @@ const Control = memo((props) => {
 
     if (newText.length === 0) return
 
-    dispatch(createAdd({
+    addTodo({
       id: ++idSeq,
       text: newText,
       complete: false
-    }))
+    })
 
     inputRef.current.value = ''
   }
@@ -34,12 +46,12 @@ const Control = memo((props) => {
 })
 
 const TodoItem = memo((props) => {
-  const { todo: { id, text, complete }, dispatch } = props
+  const { todo: { id, text, complete }, toggleTodo, removeTodo } = props
   const onChange = () => {
-    dispatch(createToggle(id))
+    toggleTodo(id)
   }
   const onRemove = () => {
-    dispatch(createRemove(id))
+    removeTodo(id)
   }
 
   return (
@@ -52,7 +64,7 @@ const TodoItem = memo((props) => {
 })
 
 const Todos = memo((props) => {
-  const { todos, dispatch } = props
+  const { todos, removeTodo, toggleTodo } = props
   return (
     <ul>
     {
@@ -61,7 +73,8 @@ const Todos = memo((props) => {
           <TodoItem
             key={todo.id}
             todo={todo}
-            dispatch={dispatch}
+            removeTodo={removeTodo}
+            toggleTodo={toggleTodo}
           />
         )
       })
@@ -117,7 +130,10 @@ function TodoList () {
 
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem(LS_KEY)) || []
-    dispatch(createSet(todos))
+    const { createTodos } = bindActionCreators({
+      createTodos: createSet
+    }, dispatch)
+    createTodos(todos)
   }, [])
 
   useEffect(() => {
@@ -126,8 +142,22 @@ function TodoList () {
 
   return (
     <div>
-      <Control dispatch={dispatch} />
-      <Todos todos={todos} dispatch={dispatch} />
+      <Control
+        {
+          ...bindActionCreators({
+            addTodo: createAdd
+          }, dispatch)
+        }
+      />
+      <Todos
+        todos={todos}
+        {
+          ...bindActionCreators({
+            removeTodo: createRemove,
+            toggleTodo: createToggle
+          }, dispatch)
+        }
+      />
     </div>
   )
 }
