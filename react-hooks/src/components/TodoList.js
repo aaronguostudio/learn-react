@@ -86,6 +86,49 @@ const Todos = memo((props) => {
 function TodoList () {
   const [todos, setTodos] = useState([])
 
+  // 假如引入了这个 incrementCount 变量，在 set 和 add 的时候增加
+  // 这时候就需要在 set 和 add 两处重复操作，换一种思维，围绕数据展开
+  const [incrementCount, setIncrementCount] = useState(0)
+
+  // reducer 替换 dispatch 里面处理数据的部分
+  function reducer (state, action) {
+    const { type, payload } = action
+    const { todos, incrementCount } = state
+
+    switch (type) {
+      case 'set':
+        return {
+          ...state,
+          todos: payload,
+          incrementCount: incrementCount + 1
+        }
+      case 'add':
+        return {
+          ...state,
+          todos: [...todos, payload],
+          incrementCount: incrementCount + 1
+        }
+      case 'remove':
+        return {
+          ...state,
+          todos: todos.filter(todo => {
+            return todo.id !== payload
+          })
+        }
+      case 'toggle':
+        return {
+          ...state,
+          todos: todos.map(todo => {
+            return todo.id === payload
+                      ? { ...todo, complete: !todo.complete }
+                      : todo
+          }),
+        }
+      default:
+        return state
+    }
+  }
+
   // useCallback to prevent re-render
   // const addTodo = useCallback((todo) => {
   //   setTodos(todos => [...todos, todo])
@@ -103,30 +146,54 @@ function TodoList () {
   //   }))
   // }, [])
 
+  // 作为修改状态的中心函数，让操作变得透明
+  // 把操作放到一起也有助于管理和 debug
   // passthrough as props, no dependencies
   const dispatch = useCallback((action) => {
-    const { type, payload } = action
-    switch (type) {
-      case 'set':
-        setTodos(payload)
-        break
-      case 'add':
-        setTodos(todos => [...todos, payload])
-        break
-      case 'remove':
-        setTodos(todos => todos.filter(todo => todo.id !== payload))
-        break
-      case 'toggle':
-        setTodos(todos => todos.map(todo => {
-          return todo.id === payload
-                    ? { ...todo, complete: !todo.complete }
-                    : todo
-        }))
-        break
-      default:
-        break
+
+    const state = {
+      todos,
+      incrementCount
     }
-  }, [])
+
+    // from useState
+    const setters = {
+      todos: setTodos,
+      incrementCount: setIncrementCount
+    }
+
+    const newState = reducer(state, action)
+
+    // 对于 dispatch 来说，它并不知道哪些值被更新了，就是一股脑的进行设置
+    for (let key in newState) {
+      setters[key](newState[key])
+    }
+
+
+    // const { type, payload } = action
+    // switch (type) {
+    //   case 'set':
+    //     setTodos(payload)
+    //     setIncrementCount(c => c + 1)
+    //     break
+    //   case 'add':
+    //     setTodos(todos => [...todos, payload])
+    //     setIncrementCount(c => c + 1)
+    //     break
+    //   case 'remove':
+    //     setTodos(todos => todos.filter(todo => todo.id !== payload))
+    //     break
+    //   case 'toggle':
+    //     setTodos(todos => todos.map(todo => {
+    //       return todo.id === payload
+    //                 ? { ...todo, complete: !todo.complete }
+    //                 : todo
+    //     }))
+    //     break
+    //   default:
+    //     break
+    // }
+  }, [todos, incrementCount])
 
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem(LS_KEY)) || []

@@ -1,3 +1,5 @@
+// 把创造 action 的操作过程化，避免在代码中分布多个对象
+
 export function createSet (payload) {
   return {
     type: 'set',
