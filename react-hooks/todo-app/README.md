@@ -130,3 +130,4 @@ function Counter () {
 
 
 <!-- start from 5.4  06:20 -->
+- 有时间重新复习一下 ch05，对理解 redux 非常有帮助
