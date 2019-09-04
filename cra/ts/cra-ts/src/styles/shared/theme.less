@@ -1,0 +1,48 @@
+@primary-color: #1890ff;
+@link-color: #1890ff;
+@link-active-color: #383838;
+
+@layout-body-background: #f4f7fa;
+@layout-sider-background: transparent;
+@layout-header-background: #fff;
+@menu-dark-submenu-bg: #f4f7fa;
+
+.ant-menu-horizontal > .ant-menu-item-selected {
+  border-bottom: 2px solid transparent;
+}
+.ant-menu-horizontal > .ant-menu-item:hover {
+  border-bottom: 2px solid transparent;
+}
+
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: transparent;
+}
+
+.ant-menu-vertical .ant-menu-item::after, .ant-menu-vertical-left .ant-menu-item::after, .ant-menu-vertical-right .ant-menu-item::after, .ant-menu-inline .ant-menu-item::after {
+  border-right: 0;
+}
+.ant-menu-horizontal {
+  border-bottom: 0;
+}
+
+.ant-menu-inline, .ant-menu-vertical, .ant-menu-vertical-left {
+  border-right: 0;
+}
+.ant-menu {
+  background-color: @layout-body-background;
+}
+.ant-layout-sider-light {
+  background-color: @layout-body-background;
+}
+.ant-layout-sider-light .ant-layout-sider-trigger {
+  background-color: @layout-body-background;
+}
+.ant-layout-header .ant-menu {
+  background-color: #fff;
+}
+.ant-menu-submenu > .ant-menu {
+  background-color: transparent;
+}
+.ant-layout-header {
+  padding: 0 20px;
+}
