@@ -1,54 +1,60 @@
 import React from 'react'
 import { Route, Switch } from 'react-router-dom'
+import { connect } from 'react-redux'
+
 import DefaultLayout from './layouts/DefaultLayout'
+import Company from './pages/Company'
 import Dashboard from './pages/Dashboard'
 import Documents from './pages/Documents'
+import Users from './pages/Users'
 import HelloWorld from './components/HelloWorld'
+import NotFound from './pages/NotFound'
 
-import { connect } from 'react-redux'
 import { AppState } from './store'
 import { setAuthor, setDocument, setTitle } from './store/document/actions'
 import { DocumentState } from './store/document/types'
-
-// interface ICounterContext {
-//   count: number,
-//   updateCount(delta: number): void,
-// };
-// const NumberContext = React.createContext<ICounterContext>({
-//   count: 42,
-//   updateCount: (n) => {
-//     throw new Error('updateCount() not implemented')
-//   }
-// })
+import { SessionState } from './store/session/types'
+import { UserState } from './store/user/types'
+import AppContext from './context'
 
 interface AppProps {
   setAuthor: typeof setAuthor
   setDocument: typeof setDocument
   setTitle: typeof setTitle
   document: DocumentState
+  session: SessionState
+  user: UserState
 }
 
 const App: React.FC<AppProps> = (props) => {
   const {
-    document
+    document,
+    session,
+    user
   } = props
 
-  console.log('>document', document)
   return (
-    <div className="container">
-      <DefaultLayout>
-        <Switch>
-          <Route exact path="/" component={Dashboard} />
-          <Route path="/hello" component={HelloWorld} />
-          <Route path="/documents" component={Documents} />
-        </Switch>
-      </DefaultLayout>
-    </div>
+    <AppContext.Provider value={{theme: session.theme}}>
+      <div className={`container ${session.theme}`}>
+        <DefaultLayout>
+          <Switch>
+            <Route exact path="/" component={Dashboard} />
+            <Route exact path="/company" component={Company} />
+            <Route exact path="/hello" component={HelloWorld} />
+            <Route path="/documents" component={Documents} />
+            <Route exact path="/users" component={Users} />
+            <Route component={NotFound} />
+          </Switch>
+        </DefaultLayout>
+      </div>
+    </AppContext.Provider>
   )
 }
 
 const mapStateToProps = (state: AppState) => ({
   document: state.document,
+  session: state.session,
+  user: state.user
 })
 
 export default connect(

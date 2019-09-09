@@ -3,9 +3,13 @@ import thunk from 'redux-thunk'
 import { composeWithDevTools } from 'redux-devtools-extension'
 
 import { documentReducer } from './document/reducers'
+import { sessionReducer } from './session/reducers'
+import { userReducers } from './user/reducers'
 
 const rootReducer = combineReducers({
-  document: documentReducer
+  document: documentReducer,
+  session: sessionReducer,
+  user: userReducers
 })
 
 export type AppState = ReturnType<typeof rootReducer>

@@ -2,6 +2,7 @@ import {
   DocumentState,
   SET_AUTHOR,
   SET_TITLE,
+  SET_DOCUMENT,
   DocumentActionTypes,
 } from './types'
 
@@ -10,11 +11,15 @@ const initialState: DocumentState = {
   title: 'Logan API'
 }
 
-export function documentReducer(
+export function documentReducer (
   state = initialState,
   action: DocumentActionTypes
 ) : DocumentState {
   switch (action.type) {
+    case SET_DOCUMENT:
+      return {
+        ...action.payload
+      }
     case SET_AUTHOR:
       return {
         ...state,

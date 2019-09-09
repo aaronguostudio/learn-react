@@ -1,19 +1,17 @@
-import { SET_AUTHOR } from "../document/types";
-
 export interface SessionState {
-  companyId: number
-  token: string
-  name: string
-  idd: number
-  role: string[],
-  theme: string
+  companyId: number | null
+  token: string | null
+  name: string | null
+  id: number | null
+  role: string[] | null,
+  theme: string | null
 }
 
 export const SET_SESSION = "SET_SESSION"
 
 interface SetSessionAction {
-  type: typeof SET_AUTHOR
-  ppayload: SessionState
+  type: typeof SET_SESSION
+  payload: SessionState
 }
 
 export type SessionActionTypes = SetSessionAction
