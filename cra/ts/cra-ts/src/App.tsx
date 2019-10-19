@@ -7,6 +7,9 @@ import Company from './pages/Company'
 import Dashboard from './pages/Dashboard'
 import Documents from './pages/Documents'
 import Users from './pages/Users'
+
+// Support
+import Emails from './pages/support/Emails'
 import HelloWorld from './components/HelloWorld'
 import NotFound from './pages/NotFound'
 
@@ -43,6 +46,7 @@ const App: React.FC<AppProps> = (props) => {
             <Route exact path="/hello" component={HelloWorld} />
             <Route path="/documents" component={Documents} />
             <Route exact path="/users" component={Users} />
+            <Route exact path="/emails" component={Emails} />
             <Route component={NotFound} />
           </Switch>
         </DefaultLayout>
