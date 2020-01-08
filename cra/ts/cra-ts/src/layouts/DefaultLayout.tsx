@@ -69,6 +69,12 @@ const DefaultLayout: React.FC<IProps> = ({children}) => {
                 <span>Users</span>
               </Link>
             </Menu.Item>
+            <Menu.Item key="4">
+              <Link to='/support/emails'>
+                <Icon type="mail" />
+                <span>Emails</span>
+              </Link>
+            </Menu.Item>
             <SubMenu
               key="sub1"
               title={
@@ -79,21 +85,21 @@ const DefaultLayout: React.FC<IProps> = ({children}) => {
               }
             >
               <Menu.Item
-                key="4"
+                key="5"
               >
                 <Link to='/documents/inprogress'>
                   In Progress
                 </Link>
               </Menu.Item>
               <Menu.Item
-                key="5"
+                key="6"
               >
                 <Link to='/documents/processed'>
                   Processed
                 </Link>
               </Menu.Item>
               <Menu.Item
-                key="6"
+                key="7"
               >
                 <Link to='/documents/history'>
                   History
