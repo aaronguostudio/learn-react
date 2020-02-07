@@ -5,17 +5,20 @@ let idSeq = Date.now()
 const storeKey = '__TODOS__'
 
 const Control = memo(function Control (props) {
-  const { addTodo } = props
+  const { dispatch } = props
   const inputRef = useRef()
   const onSubmit = e => {
     e.preventDefault()
     const newText = inputRef.current.value.trim()
     if (newText.length === 0) return
 
-    addTodo({
-      id: ++idSeq,
-      text: newText,
-      complete: false
+    dispatch({
+      type: 'add',
+      payload: {
+        id: ++idSeq,
+        text: newText,
+        complete: false
+      }
     })
 
     inputRef.current.value = ''
@@ -36,12 +39,19 @@ const Control = memo(function Control (props) {
 })
 
 const TodoItem = memo(function TodoItem (props) {
-  const { todo: { id, text, complete }, toggleTodo, removeTodo } = props
+  const { todo: { id, text, complete }, dispatch } = props
+  console.log('>dispatch', dispatch)
   const onChange = () => {
-    toggleTodo(id)
+    dispatch({
+      type: 'toggle',
+      payload: id
+    })
   }
   const onRemove = () => {
-    removeTodo(id)
+    dispatch({
+      type: 'remove',
+      payload: id
+    })
   }
   return (
     <li>
@@ -57,7 +67,7 @@ const TodoItem = memo(function TodoItem (props) {
 })
 
 const Todos = memo(function Todos (props) {
-  const { todos, toggleTodo, removeTodo } = props
+  const { todos, dispatch } = props
   return (
     <ul>
       {
@@ -65,8 +75,7 @@ const Todos = memo(function Todos (props) {
           return <TodoItem
             key={todo.id}
             todo={todo}
-            toggleTodo={toggleTodo}
-            removeTodo={removeTodo}
+            dispatch={dispatch}
           />
         })
       }
@@ -78,21 +87,49 @@ function App() {
 
   const [ todos, setTodos ] = useState([])
 
-  const addTodo = useCallback((todo) => {
-    setTodos(todos => [...todos, todo])
-  }, [])
+  // Let's move all of these operations into dispatch
+  // const addTodo = useCallback((todo) => {
+  //   setTodos(todos => [...todos, todo])
+  // }, [])
 
-  const removeTodo = useCallback((id) => {
-    setTodos(todos => todos.filter(todo => todo.id !== id))
-  }, [])
+  // const removeTodo = useCallback((id) => {
+  //   setTodos(todos => todos.filter(todo => todo.id !== id))
+  // }, [])
 
-  const toggleTodo = useCallback((id) => {
-    setTodos(todos => todos.map(todo => todo.id === id ? {...todo, complete: !todo.complete} : todo))
+  // const toggleTodo = useCallback((id) => {
+  //   setTodos(todos => todos.map(todo => todo.id === id ? {...todo, complete: !todo.complete} : todo))
+  // }, [])
+
+  // We have several operations on todo
+  // If we want to track all of the operations, it will be helpful for us the manage the data
+  // - one solition is make each operation as an object
+  // - create a centerlized function to do the operation
+  const dispatch = useCallback(action => {
+    const { type, payload } = action
+    switch (type) {
+      case 'set':
+        setTodos(payload)
+        break
+      case 'add':
+        setTodos(todos => [...todos, payload])
+        break
+      case 'toggle':
+        setTodos(todos => todos.map(todo => todo.id === payload ? {...todo, complete: !todo.complete} : todo))
+        break
+      case 'remove':
+        setTodos(todos => todos.filter(todo => todo.id !== payload))
+        break
+      default:
+
+    }
   }, [])
 
   useEffect(() => {
     const todos = JSON.parse(localStorage.getItem(storeKey) || '[]')
-    setTodos(todos)
+
+    // Let's do this by dispatch
+    // setTodos(todos)
+    dispatch({ type: 'set', payload: todos })
   }, [])
 
   useEffect(() => {
@@ -101,11 +138,10 @@ function App() {
 
   return (
     <div>
-      <Control addTodo={addTodo} />
+      <Control dispatch={dispatch} />
       <Todos
         todos={todos}
-        removeTodo={removeTodo}
-        toggleTodo={toggleTodo}
+        dispatch={dispatch}
       />
     </div>
   )
